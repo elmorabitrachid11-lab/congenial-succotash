@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VibeX - Integrated Interactive Platform</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body { background-color: #0b0b0b; color: #fff; font-family: sans-serif; overflow: hidden; user-select: none; -webkit-user-select: none; }
+::-webkit-scrollbar { display: none; }
+video { pointer-events: none; }
+.video-overlay-shield { pointer-events: auto; }
+</style>
+</head>
+<body class="flex flex-col items-center justify-center h-screen bg-black" oncontextmenu="return false;">
+
+<!-- Login Screen -->
+<div id="auth-screen" class="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl m-4">
+<h1 class="text-3xl font-bold text-center text-red-600 mb-1">VibeX</h1>
+<p class="text-center text-zinc-400 mb-6 text-sm">Content Production Platform (1080p HD)</p>
+
+<div class="space-y-4">
+<label class="text-xs text-zinc-400 block mb-1">Select Language</label>
+<select id="lang-selector" class="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white text-xs focus:outline-none focus:border-red-600 font-bold">
+<option value="en">English</option>
+<option value="fr">Français</option>
+<option value="es">Español</option>
+<option value="de">Deutsch</option>
+<option value="pt">Português</option>
+</select>
+
+<input type="email" id="email" placeholder="Email Address" class="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-xl focus:outline-none focus:border-red-600 text-white">
+<input type="password" id="password" placeholder="Password" class="w-full p-3 bg-zinc-800 border border-zinc-700 rounded-xl focus:outline-none focus:border-red-600 text-white">
+
+<div id="feedback-msg" class="text-xs text-red-400 text-center hidden"></div>
+
+<button onclick="handleLogin()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded-xl transition cursor-pointer">Login</button>
+<button onclick="handleRegister()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-red-500 border border-red-600 font-bold p-3 rounded-xl transition cursor-pointer">Register</button>
+</div>
+</div>
+
+<!-- Main App Screen -->
+<div id="app-screen" class="hidden w-full max-w-md h-full bg-black relative flex flex-col justify-between border border-zinc-800">
+
+<!-- Top Bar -->
+<div class="absolute top-0 left-0 right-0 z-10 flex justify-between items-center p-4 bg-gradient-to-b from-black/90 to-transparent">
+<span class="text-red-600 font-bold text-xl">VibeX</span>
+<div class="flex gap-2 text-xs font-semibold">
+<button onclick="switchTab('feed')" id="tab-feed" class="text-white border-b-2 border-red-600 pb-1">Feed</button>
+<button onclick="switchTab('dashboard')" id="tab-dashboard" class="text-zinc-400 pb-1">Dashboard</button>
+<button onclick="switchTab('profile')" id="tab-profile" class="text-zinc-400 pb-1">Profile</button>
+</div>
+<div class="flex gap-1">
+<button onclick="openLiveStream()" class="text-[10px] bg-red-600 text-white px-2 py-1 rounded-lg font-bold animate-pulse">Live</button>
+<button onclick="handleLogout()" class="text-[10px] bg-zinc-800 text-zinc-300 px-2 py-1 rounded-lg font-bold">Logout</button>
+</div>
+</div>
+
+<!-- Feed Section -->
+<div id="view-feed" class="w-full h-full overflow-y-scroll snap-y snap-mandatory flex flex-col">
+<div class="w-full h-full snap-start relative flex items-center justify-center bg-zinc-950">
+
+<video src="https://www.w3schools.com/html/mov_bbb.mp4" class="w-full h-full object-cover" autoplay loop muted playsinline controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture></video>
+
+<div class="absolute top-16 left-4 bg-black/70 border border-red-500/50 text-red-500 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">1080p Active</div>
+
+<div class="absolute right-4 bottom-24 flex flex-col items-center space-y-4 z-30">
+<button onclick="openGiftModal()" class="bg-zinc-900/80 p-3 rounded-full text-white hover:text-red-500 transition">💖 <span class="block text-xs">12.4K</span></button>
+<button class="bg-zinc-900/80 p-3 rounded-full text-white hover:text-red-600 transition">💬 <span class="block text-xs">430</span></button>
+<button onclick="openGiftModal()" class="bg-red-600 hover:bg-red-700 p-3 rounded-full text-white shadow-lg transition cursor-pointer">🎁 Support</button>
+<button onclick="reportInappropriateContent()" class="bg-zinc-900/80 p-3 rounded-full text-white hover:text-red-500 transition">⚠️ <span class="block text-xs">Report</span></button>
+</div>
+
+<div class="absolute bottom-16 left-4 right-16 z-10 text-left">
+<h3 class="font-bold text-white text-sm flex items-center gap-1">
+<span id="feed-username">@vibeX_creator</span>
+<span id="feed-badge" class="text-blue-500 text-xs">✔</span>
+</h3>
+<p class="text-xs text-zinc-300">⚠️ Safety Guidelines: Never share personal info or violate content policies.</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function handleLogin() {
+const email = document.getElementById('email').value;
+const pass = document.getElementById('password').value;
+if(!email || !pass) {
+const msg = document.getElementById('feedback-msg');
+msg.textContent = "Please enter both email and password";
+msg.classList.remove('hidden');
+return;
+}
+document.getElementById('auth-screen').classList.add('hidden');
+document.getElementById('app-screen').classList.remove('hidden');
+}
+function handleRegister() {
+alert("Redirecting to account registration.");
+}
+function handleLogout() {
+document.getElementById('app-screen').classList.add('hidden');
+document.getElementById('auth-screen').classList.remove('hidden');
+document.getElementById('email').value = "";
+document.getElementById('password').value = "";
+document.getElementById('feedback-msg').classList.add('hidden');
+}
+function switchTab(tab) {
+['feed', 'dashboard', 'profile'].forEach(t => {
+const btn = document.getElementById('tab-' + t);
+if(t === tab) {
+btn.className = "text-white border-b-2 border-red-600 pb-1 font-bold";
+} else {
+btn.className = "text-zinc-400 pb-1";
+}
+});
+}
+function openLiveStream() { alert("Opening live stream..."); }
+function openGiftModal() { alert("Sending support gift."); }
+function reportInappropriateContent() { alert("Content reported successfully."); }
+</script>
+</body>
+</html>
